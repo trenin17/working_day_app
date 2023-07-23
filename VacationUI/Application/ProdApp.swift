@@ -2,16 +2,10 @@ import SwiftUI
 import Combine
 
 
-struct VacationUIAppProd {
-    @ObservedObject var coordinator = AppCoordinator()
-    var body: some Scene {
-        WindowGroup {
-            return currentView
-        }
-    }
+struct VacationUIAppProd: View {
+    @ObservedObject var coordinator: AppCoordinator
     
-    @ViewBuilder
-    var currentView: some View {
+    var body: some View {
         if coordinator.isAuthorized {
             MainTabBarProd()
                 .environmentObject(EnvironmentService(serivce: coordinator.networkManagerFactory.makeManager()))
@@ -20,5 +14,4 @@ struct VacationUIAppProd {
             LoginView(credentialsStore: coordinator.credentialsStore)
         }
     }
-    
 }

@@ -8,6 +8,7 @@ struct LaunchedApp: App {
         case develop
     }
     private let mode: Mode = .prod
+    @ObservedObject var coordinator = AppCoordinator()
     
     @SceneBuilder
     var body: some Scene {
@@ -20,7 +21,7 @@ struct LaunchedApp: App {
     private var currentView: some View {
         switch mode {
         case .prod:
-            VacationUIAppProd().currentView
+            VacationUIAppProd(coordinator: coordinator)
         case .develop:
             VacationUIAppDebug(store: .mockUnauthorized)
         }
