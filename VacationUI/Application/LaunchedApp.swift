@@ -5,7 +5,6 @@ import Combine
 struct LaunchedApp: App {
     enum Mode {
         case prod
-        case develop
     }
     private let mode: Mode = .prod
     @ObservedObject var coordinator = AppCoordinator()
@@ -22,8 +21,6 @@ struct LaunchedApp: App {
         switch mode {
         case .prod:
             VacationUIAppProd(coordinator: coordinator)
-        case .develop:
-            VacationUIAppDebug(store: .mockUnauthorized)
         }
     }
     

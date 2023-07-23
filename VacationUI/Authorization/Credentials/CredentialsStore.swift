@@ -1,7 +1,8 @@
 import Foundation
 import Combine
+import EFStorage
 
-struct Credentials {
+struct Credentials: Codable {
     enum Role: String, Codable {
         case admin
         case user
@@ -18,66 +19,9 @@ protocol CredentialsPersistentStorage {
     var id: String? { get set }
 }
 
-struct CredentialsUDStorage: CredentialsPersistentStorage {
-    
-    private enum Keys {
-        static let id = "Vacation.Identifiers.Id"
-        static let tokenStorageKey = "Vacation.Creds.Token"
-        static let roleStorageKey = "Vacation.Creds.Role"
-    }
-    
-    var token: String? {
-        get {
-            UserDefaults.standard.string(forKey: Keys.tokenStorageKey)
-        }
-        set {
-            guard let newValue else {
-                UserDefaults.standard.removeObject(forKey: Keys.tokenStorageKey)
-                return
-            }
-            UserDefaults.standard.set(newValue, forKey: Keys.tokenStorageKey)
-        }
-    }
-    var role: String? {
-        get {
-            UserDefaults.standard.string(forKey: Keys.roleStorageKey)
-        }
-        set {
-            guard let newValue else {
-                UserDefaults.standard.removeObject(forKey: Keys.roleStorageKey)
-                return
-            }
-            UserDefaults.standard.set(newValue, forKey: Keys.roleStorageKey)
-        }
-    }
-    var id: String? {
-        get {
-            UserDefaults.standard.string(forKey: Keys.id)
-        }
-        set {
-            guard let newValue else {
-                UserDefaults.standard.removeObject(forKey: Keys.id)
-                return
-            }
-            UserDefaults.standard.set(newValue, forKey: Keys.id)
-        }
-    }
-    
-}
-
-struct CredentialsMockAuthorizedStorage: CredentialsPersistentStorage {
-    var token: String? = "Token hardcode"
-    var role: String? = "admin"
-    var id: String? = "id hardcode"
-}
-
-struct CredentialsMockUnAuthorizedStorage: CredentialsPersistentStorage {
-    var token: String? = nil
-    var role: String? = nil
-    var id: String? = nil
-}
-
 class CredentialsStore: ObservableObject {
+    
+    private static let storage = EFStorageFactory<Credentials>.singleValueStorage.security
     
     @Published private(set) var credentials: Credentials? {
         didSet {
@@ -85,27 +29,14 @@ class CredentialsStore: ObservableObject {
         }
     }
     
-    private var storage: CredentialsPersistentStorage
-    
-    private init(credentials: Credentials?, storage: CredentialsPersistentStorage) {
+    private init(credentials: Credentials?) {
         self.credentials = credentials
-        self.storage = storage
         handleNewCreds(credentials)
     }
     
-    static var shared: CredentialsStore = store(with: CredentialsUDStorage())
-    
-    private static func store(with storage: CredentialsPersistentStorage) -> CredentialsStore {
-        guard let token = storage.token,
-              let roleRaw = storage.role,
-              let id = storage.id,
-              let role = Credentials.Role(rawValue: roleRaw)
-        else {
-            return CredentialsStore(credentials: nil, storage: storage)
-        }
-        let creds = Credentials(id: id, token: token, role: role)
-        return CredentialsStore(credentials: creds, storage: storage)
-    }
+    static let shared = CredentialsStore(
+        credentials: CredentialsStore.storage.restore()
+    )
     
     func updateCredentials(_ credentials: Credentials?) {
         DispatchQueue.main.async {
@@ -118,20 +49,10 @@ class CredentialsStore: ObservableObject {
             clearStorage()
             return
         }
-        storage.token = credentials.token
-        storage.role = credentials.role.rawValue
-        storage.id = credentials.id
-        
+        CredentialsStore.storage.save(credentials)
     }
     
     private func clearStorage() {
-        storage.id = nil
-        storage.role = nil
-        storage.token = nil
+        CredentialsStore.storage.clear()
     }
-}
-
-extension CredentialsStore {
-    static var mockAuthorized: CredentialsStore = store(with: CredentialsMockAuthorizedStorage())
-    static var mockUnauthorized: CredentialsStore = store(with: CredentialsMockUnAuthorizedStorage())
 }

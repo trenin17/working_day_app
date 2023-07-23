@@ -1,14 +1,7 @@
-//
-//  MainTabBar.swift
-//  VacationUI
-//
-//  Created by Nikita Erokhin on 4/19/23.
-//
-
 import SwiftUI
 import EFNetwork
 
-struct MainTabBarProd: View {
+struct MainTabBar: View {
     
     @EnvironmentObject var networkManagerService: EnvironmentService<EFNetworkManager>
     @EnvironmentObject var credentialsStore: CredentialsStore
@@ -53,7 +46,7 @@ struct MainTabBarProd: View {
     }
     
     var calendar: some View {
-        ProfileCalendar_Prod(
+        ProfileCalendar(
             store: ProfileCalendarStore(networkManager: networkManagerService.serivce)
         )
         .tabItem {
@@ -68,7 +61,7 @@ struct MainTabBarProd: View {
 
 struct MainTabBar_Previews: PreviewProvider {
     static var previews: some View {
-        MainTabBarProd()
+        MainTabBar()
     }
 }
 

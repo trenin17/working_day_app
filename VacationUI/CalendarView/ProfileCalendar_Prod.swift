@@ -1,7 +1,7 @@
 import SwiftUI
 import Foundation
 
-struct ProfileCalendar_Prod: View {
+struct ProfileCalendar: View {
     
     @Environment(\.dismiss) var dismiss
     
@@ -99,9 +99,9 @@ struct ProfileCalendar_Prod: View {
     
 }
 
-struct ProfileCalendar_Prod_Previews: PreviewProvider {
+struct ProfileCalendar_Previews: PreviewProvider {
     static var previews: some View {
-        ProfileCalendar_Prod(store: ProfileCalendarStore(networkManager: .default))
+        ProfileCalendar(store: ProfileCalendarStore(networkManager: .default))
     }
 }
 

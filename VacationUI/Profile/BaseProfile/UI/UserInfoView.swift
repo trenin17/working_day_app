@@ -1,5 +1,4 @@
 import SwiftUI
-import Kingfisher
 
 class ViewHolder<Wrapee: View> {
     

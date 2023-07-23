@@ -89,7 +89,7 @@ struct EmployeeListView_Previews: PreviewProvider {
             store: store,
             profileContainer: ProfileContainer(
                 manager: .default,
-                credentialsStore: .mockAuthorized
+                credentialsStore: .shared
             )
         )
     }
