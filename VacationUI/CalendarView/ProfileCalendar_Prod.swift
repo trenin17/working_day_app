@@ -52,8 +52,6 @@ struct ProfileCalendar: View {
     private var buttons: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
-//                navigation(title: "Отсутсвие", color: .yellow)
-//                navigation(title: "Болезнь", color: .red)
                 navigation(title: "Отпуск", color: .blue)
             }.padding(.leading, 40)
         }
@@ -75,6 +73,7 @@ struct ProfileCalendar: View {
                         calendarStore: store
                     )
                 )
+                .navigationBarBackButtonHidden(true)
             },
             label: {
                 ProfileCalendarButton(title: title, color: color)

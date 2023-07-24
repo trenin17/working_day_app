@@ -10,7 +10,6 @@ struct NetworkManagerFactory {
             requestInterceptors: requestInterceptors,
             responseInterceptors: responseInterceptors
         )
-
     }
     
     var requestInterceptors: [EFRequestInterceptor] {

@@ -24,8 +24,38 @@ struct VacationDateInervalSelector: View {
     @ObservedObject var store: VacationRequestStore
     
     var body: some View {
-        viewForState()
-        
+        VStack {
+            navigationView
+            Spacer()
+            dismissIfNeeded()
+            viewForState()
+            Spacer()
+        }
+    }
+    
+    private var navigationView: some View {
+        TopNavigationView()
+        .leadView {
+            Button(
+                action: {
+                    presentationMode.wrappedValue.dismiss()
+                },
+                label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundColor(.black)
+                }
+            )
+        }
+    }
+    
+    private func dismissIfNeeded() -> some View {
+        switch store.viewState {
+        case.dismissFailure, .dismissSuccess:
+            presentationMode.wrappedValue.dismiss()
+        case .editing, .sendingRequest:
+            break
+        }
+        return EmptyView()
     }
     
     @ViewBuilder
@@ -51,14 +81,9 @@ struct VacationDateInervalSelector: View {
                 Spacer()
             }
         case .dismissSuccess:
-            EmptyView().onAppear(perform: {
-                store.calendarStore.fetchState()
-                presentationMode.wrappedValue.dismiss()
-            })
+            EmptyView()
         case .dismissFailure:
-            EmptyView().onAppear(perform: {
-                presentationMode.wrappedValue.dismiss()
-            })
+            EmptyView()
         }
     }
     
