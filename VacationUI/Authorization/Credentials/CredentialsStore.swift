@@ -21,7 +21,11 @@ protocol CredentialsPersistentStorage {
 
 class CredentialsStore: ObservableObject {
     
-    private static let storage = EFStorageFactory<Credentials>.singleValueStorage.security
+    private enum Constant {
+        static let defaultStorage = EFStorageFactory<Credentials>.singleValueStorage.security
+    }
+    
+    private let storage: AnyEFSingleValueStorage<Credentials>
     
     @Published private(set) var credentials: Credentials? {
         didSet {
@@ -29,14 +33,23 @@ class CredentialsStore: ObservableObject {
         }
     }
     
-    private init(credentials: Credentials?) {
+    private init(
+        credentials: Credentials?,
+        storage: AnyEFSingleValueStorage<Credentials>
+    ) {
+        self.storage = storage
         self.credentials = credentials
         handleNewCreds(credentials)
     }
     
-    static let shared = CredentialsStore(
-        credentials: CredentialsStore.storage.restore()
-    )
+    static let shared: CredentialsStore = {
+        let storage = Constant.defaultStorage
+        let credentials = storage.restore()
+        return CredentialsStore(
+            credentials: credentials,
+            storage: AnyEFSingleValueStorage(storage)
+        )
+    }()
     
     func updateCredentials(_ credentials: Credentials?) {
         DispatchQueue.main.async {
@@ -49,10 +62,10 @@ class CredentialsStore: ObservableObject {
             clearStorage()
             return
         }
-        CredentialsStore.storage.save(credentials)
+        storage.save(credentials)
     }
     
     private func clearStorage() {
-        CredentialsStore.storage.clear()
+        storage.clear()
     }
 }

@@ -726,7 +726,7 @@
 			repositoryURL = "https://github.com/Erokha/ErokhaFoundation";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.1.0;
+				minimumVersion = 1.2.0;
 			};
 		};
 		6BBE05172A6C326300E154A0 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {

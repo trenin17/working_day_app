@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Erokha/ErokhaFoundation",
       "state" : {
-        "revision" : "9cd4e414d486387de81996668f45c088385824b4",
-        "version" : "1.1.0"
+        "revision" : "82cd47dcca2b58e70cebf4c1ea1076ff8c51eb53",
+        "version" : "1.2.0"
       }
     },
     {
